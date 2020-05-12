@@ -1,0 +1,126 @@
+
+{% extends 'base.html'%}
+{%load shop_tags%}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-6">
+          {%if product.image%}
+            <img src="{{product.image.url}}" alt="" width="400" height="300">
+          {%else%}
+          <img src="{%static 'default.jpg'%}" alt="" width="400" height="300">
+
+          {%endif%}
+        </div>
+        <div class="col-md-6">
+       
+          <h2 id="a">{{product}}</h2>
+          <h1><Categoty/h1>
+            <a href="{{product.category.get_absolute_url}}"><h4>{{product.category.name}}</h4></a>
+            <p>{{product.price}} $</p>
+    
+                <br>
+             <form>
+                    <input type="text" class="form-control" id="exampleInpyyyyyyyyyyyyyutEmail1" placeholder="1">
+                    <br>
+                  
+             </form>
+                  {{product|checkcart:request}}
+                  <form action="{%url 'update' %}" method="POST">
+                    {%csrf_token%}
+                    <input type="hidden" name="id" value='{{product.id}}'>
+                <button type="submit" id='btn-add' data-id="{{product.id}}" data-url="{%url 'update' %}" data-action="{% if  product|checkProduct:request %}remove from cart{%else%}add to cart{%endif%}" class="btn btn-primary btn-lg">{% if  product|checkProduct:request %}remove from cart{%else%}add to cart{%endif%}</button>
+
+                  </form>
+
+        <br>
+            <form>
+                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="1">
+                    <br>
+
+                <button type="submit" class="btn btn-primary btn-lg">Buy Now</button>
+                
+            </form>
+        </div>
+    </div>
+
+
+        </div>
+
+    </div>
+</br>
+<div class="container">
+    <div class="row ml-1">
+        {{product.description|linebreaks}}
+    </div>
+</div>
+</div>
+<hr>
+<div class="container">
+    <div class="row mt-3 ml-1">
+    <form action="">
+        <div class="form-group">
+                <label for="exampleFormControlTextarea1"><h2> Your Review</h2></label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" > </textarea>
+              </div>
+        <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                <label class="form-check-label" for="inlineRadio1">1</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                <label class="form-check-label" for="inlineRadio2">2</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" >
+                <label class="form-check-label" for="inlineRadio3">3</label>
+              
+
+              </div>
+              <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option3" >
+                    <label class="form-check-label" for="inlineRadio3">4</label>
+                  
+    
+                  </div>
+                  <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="option3" >
+                        <label class="form-check-label" for="inlineRadio3">5</label>
+                      
+        
+                      </div>
+              <br><br>
+              <div><button type="submit" class="btn btn-primary btn-lg">Add Review</button></div>
+
+
+            </form>
+</div>
+</div>
+{%endblock%}
+
+{% block domready %}
+    $('#btn-add').click(function(e){
+        e.preventDefault()
+        id=$(this).data('id')
+        action = $(this).data('action')
+        action_url = $(this).data('url')
+        console.log(action_url)
+        console.log(id)
+        $.post(action_url, {id:id}, function(result){
+        $('#spn').text(result.count)
+          console.log('added'+ result.added)
+          console.log('removed'+ result.removed)
+          var previous_action=$("#btn-add").data('action')
+          $("#btn-add").data('action',previous_action =='add to cart'?'remove from cart':'add to cart');
+          $("#btn-add").text(previous_action=='remove from cart'?'add to cart':'remove from cart')
+          console.log($("#btn-add").data('action'))
+        });
+    })
+{% endblock %}
+
+
+<!-- change_password -->

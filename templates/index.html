@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+    <form action="." method="POST" id="form">
+      <textarea id="tx" cols="60" rows="3" class="form-control"></textarea>
+      <a href="#" id='btn' class="btn btn-primary">submit</a>
+    </form>
+    <div id="div"></div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.0.min.js">
+  </script>    
+  
+  </body>
+  <script>
+    $(document).ready(function(){
+      $('#form').click(function(e){
+        e.preventDefault()
+        data={
+          'content':$(this).find('textarea').val(),
+          'method':$(this).attr('method')
+        }
+        console.log(data.content,data.method)
+        $('#div').text("this is "+ssdata.content)
+        })
+      })
+
+  </script> 
+</html>

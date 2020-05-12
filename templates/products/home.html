@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{%load shop_tags%}
+
+{%block title%}{%if category %}{{category.name}}{%else%}products{%endif%}{%endblock%}
+{% block content %}
+
+<div class="container">
+<div class="row">
+    <div id="main" class="product-list">
+        <h1>{% if category %}{{ category.name }}{% else %}Products
+        {% endif %}</h1>
+    </div> 
+</div>
+    <div class="row mt-3 ">
+
+        <div id="sidebar" >
+            <h3>Categories</h3>
+            <ul style="list-style: none;">
+            <li {% if not category %}class="selected"{% endif %}>
+            <a href="{% url "products" %}">All</a>
+            </li>
+            {% for c in categories %}
+            <li {% if category.slug == c.slug %}class="selected"
+            {% endif %}>
+            <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+            </li>
+            {% endfor %}
+            </ul>
+            </div>
+            
+        {%for product in products%}
+        <div class="col-lg-4 col-md-6">
+    <div class="card" style="width: 18rem;">
+    {%if product.image%}
+    <img class="card-img-top"  src="{{product.image.url}}" alt="Card image cap">
+    {%else%} 
+    <img class="card-img-top" src="{% static 'default.jpg' %}" alt="Card image cap"> 
+    {%endif%}   
+    <div class="card-body">
+      <h5 class="card-title" ><a id="myid" href="{%url 'product_detail' product.id product.slug%}">{{product}}</a></h5> <p>price {{product.price}}</p> 
+      <a href="{{ product.get_absolute_url }}" class="btn btn-primary">View</a>
+      <a  href="#" data-id="{{product.id}}" id="btn{{product.id}}" data-action="{%if product|checkProduct:request %}remove{%else%}add{%endif%}" class="btn-add btn btn-primary ml-5">{%if product|checkProduct:request %}remove{%else%}add{%endif%}</a>
+      <input type="hidden" name="lol" id="proid" value="{{product.id}}">
+    </div>
+</div>
+  </div>
+{%endfor%}
+</div>
+</div>
+
+{% endblock %}
+
+
+{% block domready %}
+    $('.btn-add').click(function(e){
+        e.preventDefault()
+        id=$(this).data('id')
+        action=$(this).data('action')
+        data_id=$(this).data('id')
+        item_total = parseFloat($(this).data('total'))
+        console.log(action)
+        $.post("/cart/update/", {id:id}, function(result){
+            
+            if(action=='remove'){
+                console.log('turning to add')
+                $('#btn'+data_id).text('add')
+                $('#btn'+data_id).data('action','add')
+                $('#spn').text(result.count)
+
+            }
+            else if(action=='add'){
+                console.log('turning to remove')
+                $('#btn'+data_id).text('remove')
+                $('#btn'+data_id).data('action','remove')
+                $('#spn').text(result.count)
+
+            }
+        })
+    })
+{%endblock%}

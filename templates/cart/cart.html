@@ -1,0 +1,25 @@
+{% extends 'basepage.html' %}
+{% load static %}
+
+{% block title %}
+Cart
+{% endblock %}
+
+{% block content %}
+</header>
+<!-- </section> -->
+
+<section id="main-section" class="ml-auto">
+    <h1>We are in home Page </h1>
+<h2>Buy for $5.00</h2>
+<form action="{% url 'charge' %}" method="post">
+  {% csrf_token %}
+  <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="{{ key }}"
+          data-description="A Django Charge"
+          data-amount="500"
+          data-locale="auto"></script>
+</form>
+</section>
+<!-- products section -->
+{% endblock %}

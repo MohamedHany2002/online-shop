@@ -1,0 +1,8 @@
+
+<form action="{%url 'login' %}" method="POST">
+    {%csrf_token%}
+    {{url}}
+    <input type="hidden" name='url' value={{url}}>
+    {{loginform}}
+    <button type="submit">submit</button>
+</form>

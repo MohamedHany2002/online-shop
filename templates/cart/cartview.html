@@ -1,0 +1,110 @@
+{%extends 'base.html'%}
+{%block content%}
+<div>
+  <h2>Enter your coupon</h2>
+{%include 'coupon/couponForm.html'%}
+</div>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">number</th>
+        <th scope="col">product</th>
+        <th scope="col">price</th>
+        <th scope="col">quantity</th>
+        <th scope="col">total</th>
+      </tr>
+    </thead>
+    <tbody>
+        {%for item in cart.cart_items.all%}
+      <tr id="remove{{item.product.id}}" >
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{item.product.name}}</td>
+        <td>{{item.product.price}}</td>
+        <td>
+              
+            <form action="{%url 'update'  %}" method="POST">
+            {%csrf_token%}
+            <input type="hidden" name="item_id" value="{{item.id}}">
+            <input type="number" name="quantity"  value="{{item.quantity}}">
+            <button type="submit">change</button>
+            </form></td>
+        <td>{{item.item_total}}</td>
+        <td>
+            <!-- <input type="hidden" name="id" value="{{item.product.id}}"> -->
+            <a href="#" class="remove" data-url="{%url 'cart' %}" data-id="{{item.product.id}}" data-total="{{item.item_total}}" type="submit" class="btn btn-primary">remove</a>
+        </td>
+      </tr>
+      {%endfor%}
+      {%if cart.getcount %}
+      <tr id="checkbtn">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <span>total</span><td id="total">{{cart.total|floatformat:"2"}} after discount {{cart.discount}} %</td>
+        <td>
+          <a class="btn btn-primary" href="{%url 'checkout' %}" type="submit">check out</a></td>
+
+      </tr>
+      {%endif%}
+
+    </tbody>
+  </table>
+
+    <div id="app"></div>
+    <a href="#" id="go">go</a>
+  {%endblock%}
+
+{% block domready %}
+
+$('.remove').click(function(e){
+  e.preventDefault()
+  id=$(this).data('id')
+  item_id=$(this).attr('id')
+  console.log($(this).attr('id'))
+  item_total = parseFloat($(this).data('total'))
+  action_url = $(this).data('url')
+  console.log(action_url)
+  console.log(id)
+  console.log(item_total)
+  $.post("/cart/update/", {id:id}, function(result){
+  $('#spn').text(result.count)
+  $('#remove'+id).html('')
+  total=parseFloat($('#total').text())
+  $('#total').text(total-item_total)
+  if(result.count==0){
+    $('#checkbtn').remove()
+  }
+
+}); 
+}); 
+
+{%endblock%}
+<!-- 
+
+$('.remove').click(function(e){ 
+  e.preventDefault()
+    $.ajax({
+      method:'GET',
+      url:"{%url 'api_cart'%}",
+      success:function(data){
+        $.each(data,function(index,value){
+          console.log(data)
+          $('#app').text(data)
+
+        })
+        $('#app').text(data)
+
+        console.log('data')
+        console.log(data)
+        console.log('price')
+        console.log(data.items[0][0])
+      },
+      error:function(data){
+        console.log('data-error')
+        console.log(data)
+      }
+
+    })
+
+}) -->
